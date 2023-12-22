@@ -14,6 +14,7 @@
                         <th>ID</th>
                         <th>Title</th>
                         <th>Slug</th>
+                        <th><a class="btn btn-primary btn-sm" href="{{ route('admin.projects.create') }}">Add New Project</a></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -5,17 +5,34 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $projects = Project::limit(12)->get();
 
         return view('admin.projects.index', compact('projects'));
+        // $data = $request->all();
+
+        // $query = DB::table('projects');
+
+        // if (isset($data['title'])) {
+        //     $query = $query->where('title', 'like', "%{$data['title']}%");
+        // }
+
+        // // aggiungere altri filtri se li abbiamo
+
+        // $posts = $query->paginate(20);
+
+        // return view('admin.projects.index', compact('projects'));
     }
 
     /**
@@ -31,7 +48,17 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|max:255|string|unique:projects',
+            'content' => 'nullable|min:5|string'
+        ]);
+
+        $data = $request->all();
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        $project = Project::create($data);
+
+        return redirect()->route('admin.projects.show', $project);
     }
 
     /**
@@ -55,7 +82,18 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $request->validate([
+            'title' => ['required', 'max:255', 'string', Rule::unique('projects')->ignore($project->id)],
+            'content' => 'nullable|min:5|string'
+        ]);
+
+        $data = $request->all();
+
+        $data['slug'] = Str::slug($data['title'], '-');
+
+        $project->update($data);
+
+        return redirect()->route('admin.projects.show', $project);
     }
 
     /**
