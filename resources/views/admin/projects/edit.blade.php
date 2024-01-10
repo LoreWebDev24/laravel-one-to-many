@@ -22,16 +22,16 @@
           <input type="text" readonly required class="form-control" name="slug" id="slug" placeholder="Titolo del post" value="{{ old('slug',$project->slug) }}">
         </div>
         <div class="mb-3">
-          <label for="category_id" class="form-label">Categories</label>
-          <select name="category_id" class="form-control" id="category_id">
-            <option>Seleziona una categoria</option>
+          <label for="type_id" class="form-label">Types</label>
+          <select name="type_id" class="form-control" id="type_id">
+            <option>Select a Type</option>
             @foreach($types as $type)
               <option @selected( old('type_id', optional($project->type)->id ) == $type->id ) value="{{ $type->id }}">{{ $type->name }}</option>
             @endforeach
           </select>
         </div>
         <div class="mb-3">
-          <label for="content"  class="form-label">Post content</label>
+          <label for="content"  class="form-label">Project content</label>
           <textarea class="form-control" id="content" name="content" rows="3">{{ old('content',$project->content) }}</textarea>
         </div>
         <div class="mb-3">

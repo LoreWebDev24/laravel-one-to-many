@@ -92,6 +92,8 @@ class ProjectController extends Controller
 
         $data = $request->all();
 
+        // dd($data);
+
         $data['slug'] = Str::slug($data['title'], '-');
 
         $project->update($data);
