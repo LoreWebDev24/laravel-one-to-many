@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Type;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -18,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $projects = Project::limit(12)->get();
+        $projects = Project::limit(1000)->get();
 
         return view('admin.projects.index', compact('projects'));
         // $data = $request->all();
@@ -48,7 +45,7 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|max:255|string|unique:projects',
@@ -78,17 +75,19 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $types = Type::orderBy('name', 'ASC')->get();
+
         return view('admin.projects.edit', compact('project','types'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(Request $request, Project $project)
     {
         $request->validate([
             'title' => ['required', 'max:255', 'string', Rule::unique('projects')->ignore($project->id)],
-            'content' => 'nullable|min:5|string'
+            'content' => 'nullable|min:5|string',
+            'type_id' => 'nullable|exists:types,id'
         ]);
 
         $data = $request->all();
